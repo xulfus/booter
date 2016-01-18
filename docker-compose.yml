@@ -10,6 +10,21 @@ booter:
   env_file:
     - .env
 
+booterdev:
+  build: .
+  dockerfile: Dockerfile.dev.docker
+  links:
+    - booterpg
+  ports:
+    - "8080:8080"
+  environment:
+    - PGURL=booterpg
+  env_file:
+    - .env
+  volumes:
+    - .:/booter
+    - ~/.m2:/root/.m2
+
 booterpg:
   image: postgres:9.4
   ports:
