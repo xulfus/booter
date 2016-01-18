@@ -1,4 +1,4 @@
-package com.gofore.booter;
+package com.gofore.booter.repository;
 
 import com.gofore.booter.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
