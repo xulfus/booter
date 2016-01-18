@@ -1,0 +1,26 @@
+
+booter:
+  image: gofore/booter
+  links:
+    - booterpg
+  ports:
+    - "8080:8080"
+  environment:
+    - PGURL=booterpg
+  env_file:
+    - .env
+
+booterpg:
+  image: postgresql:9.4
+  ports:
+    - "5432:5432"
+  volumes_from:
+    - booterdata
+  env_file:
+    - .env
+
+booterdata:
+  image: debian:wheezy
+  volumes:
+    - /var/lib/postgresql/data
+
