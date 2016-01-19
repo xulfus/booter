@@ -79,4 +79,9 @@ public class Account implements UserDetails {
     Account() { // jpa only
     }
 
+    @Override
+    public String toString() {
+        return username;
+    }
+
 }

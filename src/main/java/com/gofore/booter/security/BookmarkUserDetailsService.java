@@ -20,10 +20,10 @@ public class BookmarkUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         Optional<Account> a = accountRepository.findByUsername(name);
-        System.out.println("retrieved user account " + a);
-        if (a.isPresent())
+        if (a.isPresent()) {
+            System.out.println("retrieved user account " + a.get());
             return a.get();
-        else
+        } else
             throw new UsernameNotFoundException(name);
     }
 }
