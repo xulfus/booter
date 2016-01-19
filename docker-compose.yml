@@ -27,12 +27,12 @@ booterdev:
 
 booterpg:
   image: postgres:9.4
+  env_file:
+    - .env
   ports:
     - "5432:5432"
   volumes_from:
     - booterdata
-  env_file:
-    - .env
 
 booterdata:
   image: debian:wheezy
