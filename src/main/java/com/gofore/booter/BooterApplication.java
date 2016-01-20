@@ -10,5 +10,4 @@ public class BooterApplication {
         SpringApplication.run(BooterApplication.class, args);
     }
 
-
 }

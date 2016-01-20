@@ -1,14 +1,11 @@
 package com.gofore.booter.controller;
 
 import com.gofore.booter.model.Bookmark;
-import com.gofore.booter.repository.AccountRepository;
-import com.gofore.booter.repository.BookmarkRepository;
+import com.gofore.booter.service.BookmarkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collection;
 
@@ -16,52 +13,31 @@ import java.util.Collection;
 @RequestMapping("/{userId}/bookmarks")
 public class BookmarkController {
 
-    private final BookmarkRepository bookmarkRepository;
-
-    private final AccountRepository accountRepository;
+    private final BookmarkService bookmarkService;
 
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> add(@PathVariable String userId, @RequestBody Bookmark input) {
-        this.validateUser(userId);
-        return this.accountRepository
-                .findByUsername(userId)
-                .map(account -> {
-                    Bookmark result = bookmarkRepository.save(new Bookmark(account,
-                            input.uri, input.description));
 
-                    HttpHeaders httpHeaders = new HttpHeaders();
-                    httpHeaders.setLocation(ServletUriComponentsBuilder
-                            .fromCurrentRequest().path("/{id}")
-                            .buildAndExpand(result.getId()).toUri());
-                    return new ResponseEntity<>(null, httpHeaders, HttpStatus.CREATED);
-                }).get();
-
+        return null;
     }
 
     @RequestMapping(value = "/{bookmarkId}", method = RequestMethod.GET)
-    Bookmark readBookmark(@PathVariable String userId, @PathVariable Long bookmarkId) {
-        this.validateUser(userId);
-        return this.bookmarkRepository.findOne(bookmarkId);
+    Bookmark readBookmark(@PathVariable("userId") String userId, @PathVariable Long bookmarkId) {
+        return bookmarkService.getBookmark(userId, bookmarkId);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    Collection<Bookmark> readBookmarks(@PathVariable String userId) {
-        this.validateUser(userId);
-        return this.bookmarkRepository.findByAccountUsername(userId);
+    Collection<Bookmark> readBookmarks(@PathVariable("userId") String userId) {
+        return bookmarkService.getBookmarks(userId);
     }
 
     @Autowired
-    BookmarkController(BookmarkRepository bookmarkRepository,
-                       AccountRepository accountRepository) {
-        this.bookmarkRepository = bookmarkRepository;
-        this.accountRepository = accountRepository;
+    BookmarkController(BookmarkService bookmarkService) {
+        this.bookmarkService = bookmarkService;
     }
 
-    private void validateUser(String userId) {
-        this.accountRepository.findByUsername(userId).orElseThrow(
-                () -> new UserNotFoundException(userId));
-    }
+
 }
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
