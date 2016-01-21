@@ -2,6 +2,7 @@ package com.gofore.booter.controller;
 
 import com.gofore.booter.model.Bookmark;
 import com.gofore.booter.service.BookmarkService;
+import com.gofore.booter.service.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,10 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<?> add(@PathVariable String userId, @RequestBody Bookmark input) {
 
-        return null;
+        return null; // TODO
     }
 
     @RequestMapping(value = "/{bookmarkId}", method = RequestMethod.GET)
@@ -32,19 +32,18 @@ public class BookmarkController {
         return bookmarkService.getBookmarks(userId);
     }
 
+    @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="User not found")
+    @ExceptionHandler(UserNotFoundException.class)
+    public void usernameNotFound() {
+        // Nothing to do
+    }
+
     @Autowired
     BookmarkController(BookmarkService bookmarkService) {
         this.bookmarkService = bookmarkService;
     }
 
-
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class UserNotFoundException extends RuntimeException {
 
-    public UserNotFoundException(String userId) {
-        super("could not find user '" + userId + "'.");
-    }
-}
 

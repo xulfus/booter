@@ -33,7 +33,7 @@ public class BookmarkService {
     @PostAuthorize("returnObject.account.username == principal.username")
     public Bookmark getBookmark(@PathVariable("userId") String userId, @PathVariable Long bookmarkId) {
         this.validateUser(userId);
-        return this.bookmarkRepository.findOne(bookmarkId);
+        return this.bookmarkRepository.findOne(bookmarkId); // todo query with user and change to PreAuthorize
     }
 
     @PreAuthorize("principal.username == #userId")
@@ -52,14 +52,6 @@ public class BookmarkService {
     private void validateUser(String userId) {
         this.accountRepository.findByUsername(userId).orElseThrow(
                 () -> new UserNotFoundException(userId));
-    }
-}
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class UserNotFoundException extends RuntimeException {
-
-    public UserNotFoundException(String userId) {
-        super("could not find user '" + userId + "'.");
     }
 }
 
