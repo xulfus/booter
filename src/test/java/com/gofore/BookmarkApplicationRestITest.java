@@ -40,7 +40,11 @@ public class BookmarkApplicationRestITest {
 
     @Test
     public void user_can_retrieve_her_own_bookmarks() {
-        given().mockMvc(mvc).auth().with(user("janne").password("none")).when().get("/janne/bookmarks").then().statusCode(200).body("", hasSize(2));
+        given().mockMvc(mvc).auth().with(user("janne").password("none"))
+                .when().get("/janne/bookmarks")
+                .then()
+                .statusCode(200)
+                .body("", hasSize(2));
     }
 
     @Test
