@@ -23,22 +23,22 @@ public class BookmarkService {
 
     private final AccountRepository accountRepository;
 
-    void addBookmark(String userId, Bookmark input) {
-        this.validateUser(userId);
+    public Bookmark addBookmark(String userId, Bookmark input) {
+        System.out.println("userId = " + userId);
         Account account = accountRepository.findByUsername(userId).get();
-        bookmarkRepository.save(new Bookmark(account,
+        Bookmark save = bookmarkRepository.save(new Bookmark(account,
                 input.uri, input.description));
+        System.out.println("saved bookmark with id "+save.getId());
+        return save;
     }
 
-    @PostAuthorize("returnObject.account.username == principal.username")
+    @PreAuthorize("principal.username == #userId")
     public Bookmark getBookmark(@PathVariable("userId") String userId, @PathVariable Long bookmarkId) {
-        this.validateUser(userId);
-        return this.bookmarkRepository.findOne(bookmarkId); // todo query with user and change to PreAuthorize
+        return this.bookmarkRepository.findByAccountAndId(userId, bookmarkId);
     }
 
     @PreAuthorize("principal.username == #userId")
     public Collection<Bookmark> getBookmarks(@PathVariable("userId") String userId) {
-        this.validateUser(userId);
         return this.bookmarkRepository.findByAccountUsername(userId);
     }
 
@@ -49,9 +49,5 @@ public class BookmarkService {
         this.accountRepository = accountRepository;
     }
 
-    private void validateUser(String userId) {
-        this.accountRepository.findByUsername(userId).orElseThrow(
-                () -> new UserNotFoundException(userId));
-    }
 }
 
