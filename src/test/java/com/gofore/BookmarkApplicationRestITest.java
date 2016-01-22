@@ -1,6 +1,8 @@
 package com.gofore;
 
 import com.gofore.booter.BooterApplication;
+import com.jayway.restassured.http.ContentType;
+import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,18 +43,23 @@ public class BookmarkApplicationRestITest {
         given().mockMvc(mvc).auth().with(user("janne").password("none"))
                 .when().get("/janne/bookmarks")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .body("", hasSize(2));
     }
 
     @Test
     public void user_cannot_retrieve_other_bookmarks() {
-        given().mockMvc(mvc).auth().with(httpBasic("janne", "none")).when().get("/manne/bookmarks").then().statusCode(403);
+        given().mockMvc(mvc).auth().with(httpBasic("janne", "none")).when().get("/manne/bookmarks").then().statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     @Test
     public void unauthorized_user_cannot_retrieve_bookmarks() {
-        given().mockMvc(mvc).auth().with(httpBasic("janne", "gone")).when().get("/janne/bookmarks").then().statusCode(401);
+        given().mockMvc(mvc).auth().with(httpBasic("janne", "gone")).when().get("/janne/bookmarks").then().statusCode(HttpStatus.SC_UNAUTHORIZED);
+    }
+
+    @Test
+    public void can_add_new_bookmark() {
+        given().mockMvc(mvc).auth().with(httpBasic("janne", "none")).body("{\"uri\":\"https://gofore.com\",\"description\":\"go!\"}").contentType(ContentType.JSON).when().post("/janne/bookmarks").then().statusCode(HttpStatus.SC_CREATED);
     }
 
 }
