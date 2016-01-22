@@ -12,13 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = BooterApplication.class)
@@ -49,7 +47,12 @@ public class BookmarkApplicationRestITest {
 
     @Test
     public void user_cannot_retrieve_other_bookmarks() {
-        given().mockMvc(mvc).auth().with(user("janne").password("none")).when().get("/manne/bookmarks").then().statusCode(403);
+        given().mockMvc(mvc).auth().with(httpBasic("janne", "none")).when().get("/manne/bookmarks").then().statusCode(403);
+    }
+
+    @Test
+    public void unauthorized_user_cannot_retrieve_bookmarks() {
+        given().mockMvc(mvc).auth().with(httpBasic("janne", "gone")).when().get("/janne/bookmarks").then().statusCode(401);
     }
 
 }
