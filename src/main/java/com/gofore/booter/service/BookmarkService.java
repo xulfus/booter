@@ -18,11 +18,10 @@ public class BookmarkService {
 
     private final AccountRepository accountRepository;
 
+    @PreAuthorize("principal.username == #userId")
     public Bookmark addBookmark(String userId, Bookmark input) {
-        System.out.println("userId = " + userId);
         Account account = accountRepository.findByUsername(userId).get();
-        Bookmark save = bookmarkRepository.save(new Bookmark(account,
-                input.uri, input.description));
+        Bookmark save = bookmarkRepository.save(new Bookmark(account, input.uri, input.description));
         System.out.println("saved bookmark with id "+save.getId());
         return save;
     }

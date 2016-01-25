@@ -5,10 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +20,8 @@ public class Account implements UserDetails {
     @GeneratedValue
     private Long id;
 
+    private Long version;
+
     public Set<Bookmark> getBookmarks() {
         return bookmarks;
     }
@@ -30,7 +29,6 @@ public class Account implements UserDetails {
     public Long getId() {
         return id;
     }
-
 
     public String getPassword() {
         return password;
@@ -40,7 +38,14 @@ public class Account implements UserDetails {
         return username;
     }
 
+    @Version
+    public Long getVersion() {
+        return version;
+    }
 
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 
     @JsonIgnore
     public String password;
