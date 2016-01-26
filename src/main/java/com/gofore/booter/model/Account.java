@@ -13,6 +13,7 @@ import java.util.Set;
 @Entity
 public class Account implements UserDetails {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "account")
     private Set<Bookmark> bookmarks = new HashSet<>();
 

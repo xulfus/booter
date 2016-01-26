@@ -18,8 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
+        http.csrf().disable()
+                .httpBasic()
+                .and()
+                .authorizeRequests().antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll()
+                .anyRequest().authenticated();
     }
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsService userDetailsService) throws Exception {
