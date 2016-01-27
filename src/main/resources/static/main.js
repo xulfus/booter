@@ -20,17 +20,25 @@ class BookmarksBox extends React.Component {
     this.state = { data: [] };
   }
   componentDidMount() {
-    const url = this.props.url;
+    const userUrl = '/user';
+    let username;
     $.ajax({
-      url,
+      url: userUrl,
       dataType: 'json',
-      cache: false,
-      success: data => {
-        this.setState({ data });
-      },
-      error: (xhr, status, err) => {
-        console.error(url, status, err.toString());
-      }
+      cache: false
+    }).then(user => {
+      $.ajax({
+        url: `/${user.name}/bookmarks`,
+        dataType: 'json',
+        cache: false,
+        success: data => {
+          this.setState({ data });
+        },
+        error: (xhr, status, err) => {
+          console.log(username);
+          console.error('could not get bookmarks', err);
+        }
+      });
     });
   }
   render() {
@@ -63,5 +71,5 @@ const BookmarkForm = () => (
 );
 
 ReactDOM.render(
-  <BookmarksBox url="/janne/bookmarks"/>, document.getElementById('example')
+  <BookmarksBox />, document.getElementById('example')
 );

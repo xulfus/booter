@@ -90,17 +90,25 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
-	      var url = this.props.url;
+	      var userUrl = '/user';
+	      var username = undefined;
 	      $.ajax({
-	        url: url,
+	        url: userUrl,
 	        dataType: 'json',
-	        cache: false,
-	        success: function success(data) {
-	          _this2.setState({ data: data });
-	        },
-	        error: function error(xhr, status, err) {
-	          console.error(url, status, err.toString());
-	        }
+	        cache: false
+	      }).then(function (user) {
+	        $.ajax({
+	          url: '/' + user.name + '/bookmarks',
+	          dataType: 'json',
+	          cache: false,
+	          success: function success(data) {
+	            _this2.setState({ data: data });
+	          },
+	          error: function error(xhr, status, err) {
+	            console.log(username);
+	            console.error('could not get bookmarks', err);
+	          }
+	        });
 	      });
 	    }
 	  }, {
@@ -146,7 +154,7 @@
 	  );
 	};
 
-	ReactDOM.render(React.createElement(BookmarksBox, { url: '/janne/bookmarks' }), document.getElementById('example'));
+	ReactDOM.render(React.createElement(BookmarksBox, null), document.getElementById('example'));
 
 /***/ },
 /* 1 */
