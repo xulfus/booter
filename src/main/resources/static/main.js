@@ -1,10 +1,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-
-const data =
-  [{ id: 1, description: 'facebook', uri: 'https://facebook.com' },
-   { id: 2, description: 'twitter', uri: 'https://twitter.com' }];
+const $ = require('jQuery');
 
 const Bookmark = props => (
   <div className="bookmark">
@@ -15,22 +12,44 @@ const Bookmark = props => (
   </div>
 );
 
-Bookmark.propTypes = { description: React.PropTypes.string, uri: React.PropTypes.bool };
+Bookmark.propTypes = { description: React.PropTypes.string, uri: React.PropTypes.string };
 
-const BookmarksBox = props => (
-  <div>
-    <h1>Bookmarks</h1>
-      <BookmarkList data={props.data}/>
-      <BookmarkForm/>
-  </div>
-);
+class BookmarksBox extends React.Component {
+  constructor() {
+    super();
+    this.state = { data: [] };
+  }
+  componentDidMount() {
+    const url = this.props.url;
+    $.ajax({
+      url,
+      dataType: 'json',
+      cache: false,
+      success: data => {
+        this.setState({ data });
+      },
+      error: (xhr, status, err) => {
+        console.error(url, status, err.toString());
+      }
+    });
+  }
+  render() {
+    return (
+        <div>
+          <h1>Bookmarks</h1>
+            <BookmarkList data={this.state.data}/>
+            <BookmarkForm/>
+        </div>
+    );
+  }
+}
 
-BookmarksBox.propTypes = { data: React.PropTypes.array };
+BookmarksBox.propTypes = { url: React.PropTypes.string };
 
 const BookmarkList = props => (
   <div className="bookmarkList">
     {props.data.map(item =>
-      <Bookmark description={item.description} uri={item.uri}/>)}
+      <Bookmark key={item.id} description={item.description} uri={item.uri}/>)}
   </div>
 );
 
@@ -38,10 +57,11 @@ BookmarkList.propTypes = { data: React.PropTypes.array };
 
 const BookmarkForm = () => (
   <div className="bookmarkForm">
-      Enter your bookmarks here
+    <br/>
+      Enter your bookmarks here, man!
   </div>
 );
 
 ReactDOM.render(
-  <BookmarksBox data={data}/>, document.getElementById('example')
+  <BookmarksBox url="/janne/bookmarks"/>, document.getElementById('example')
 );
