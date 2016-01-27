@@ -1,43 +1,47 @@
-// main.js
-var React = require('react');
-var ReactDOM = require('react-dom');
+
+const React = require('react');
+const ReactDOM = require('react-dom');
+
+const data =
+  [{ id: 1, description: 'facebook', uri: 'https://facebook.com' },
+   { id: 2, description: 'twitter', uri: 'https://twitter.com' }];
 
 const Bookmark = props => (
   <div className="bookmark">
     <h2 className="description">
       {props.description}
     </h2>
-    {props.children}
+    {props.uri}
   </div>
-)
+);
 
-const BookmarksBox = () => (
+Bookmark.propTypes = { description: React.PropTypes.string, uri: React.PropTypes.bool };
+
+const BookmarksBox = props => (
   <div>
     <h1>Bookmarks</h1>
-      <BookmarkList/>
+      <BookmarkList data={props.data}/>
       <BookmarkForm/>
   </div>
-)
+);
 
-const BookmarkList = () => (
+BookmarksBox.propTypes = { data: React.PropTypes.array };
+
+const BookmarkList = props => (
   <div className="bookmarkList">
-    Hello, this the list of your bookmarks
-    <Bookmark description="facebook">
-      https://facebook.com
-    </Bookmark>
-    <Bookmark description="twitter">
-      https://twitter.com
-    </Bookmark>
+    {props.data.map(item =>
+      <Bookmark description={item.description} uri={item.uri}/>)}
   </div>
-)
+);
 
-const BookmarkForm = () =>  (
+BookmarkList.propTypes = { data: React.PropTypes.array };
+
+const BookmarkForm = () => (
   <div className="bookmarkForm">
       Enter your bookmarks here
   </div>
-)
+);
 
 ReactDOM.render(
-  <BookmarksBox/>,
-  document.getElementById('example')
+  <BookmarksBox data={data}/>, document.getElementById('example')
 );

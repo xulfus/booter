@@ -46,64 +46,63 @@
 
 	'use strict';
 
-	// main.js
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
 
+	var data = [{ id: 1, description: 'facebook', uri: 'https://facebook.com' }, { id: 2, description: 'twitter', uri: 'https://twitter.com' }];
+
 	var Bookmark = function Bookmark(props) {
-	    return React.createElement(
-	        'div',
-	        { className: 'bookmark' },
-	        React.createElement(
-	            'h2',
-	            { className: 'description' },
-	            props.description
-	        ),
-	        props.children
-	    );
+	  return React.createElement(
+	    'div',
+	    { className: 'bookmark' },
+	    React.createElement(
+	      'h2',
+	      { className: 'description' },
+	      props.description
+	    ),
+	    props.uri
+	  );
 	};
 
-	var BookmarksBox = function BookmarksBox() {
-	    return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	            'h1',
-	            null,
-	            'Bookmarks'
-	        ),
-	        React.createElement(BookmarkList, null),
-	        React.createElement(BookmarkForm, null)
-	    );
+	Bookmark.propTypes = { description: React.PropTypes.string, uri: React.PropTypes.bool };
+
+	var BookmarksBox = function BookmarksBox(props) {
+	  return React.createElement(
+	    'div',
+	    null,
+	    React.createElement(
+	      'h1',
+	      null,
+	      'Bookmarks'
+	    ),
+	    React.createElement(BookmarkList, { data: props.data }),
+	    React.createElement(BookmarkForm, null)
+	  );
 	};
 
-	var BookmarkList = function BookmarkList() {
-	    return React.createElement(
-	        'div',
-	        { className: 'bookmarkList' },
-	        'Hello, this the list of your bookmarks',
-	        React.createElement(
-	            Bookmark,
-	            { description: 'facebook' },
-	            'https://facebook.com'
-	        ),
-	        React.createElement(
-	            Bookmark,
-	            { description: 'twitter' },
-	            'https://twitter.com'
-	        )
-	    );
+	BookmarksBox.propTypes = { data: React.PropTypes.array };
+
+	var BookmarkList = function BookmarkList(props) {
+	  return React.createElement(
+	    'div',
+	    { className: 'bookmarkList' },
+	    props.data.map(function (item) {
+	      return React.createElement(Bookmark, { description: item.description, uri: item.uri });
+	    })
+	  );
 	};
+
+	BookmarkList.propTypes = { data: React.PropTypes.array };
 
 	var BookmarkForm = function BookmarkForm() {
-	    return React.createElement(
-	        'div',
-	        { className: 'bookmarkForm' },
-	        'Enter your bookmarks here'
-	    );
+	  return React.createElement(
+	    'div',
+	    { className: 'bookmarkForm' },
+	    'Enter your bookmarks here'
+	  );
 	};
 
-	ReactDOM.render(React.createElement(BookmarksBox, null), document.getElementById('example'));
+	ReactDOM.render(React.createElement(BookmarksBox, { data: data }), document.getElementById('example'));
 
 /***/ },
 /* 1 */
